@@ -11,12 +11,14 @@ import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRangePicker } from "react-date-range";
 
-const Header = () => {
+import { useRouter } from "next/router";
+
+const Header = ({placeholder}) => {
   const [searchInput, setSearchInput] = useState("");
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [guestNumber, setGuestNumber] = useState(0);
-
+  const router = useRouter();
   const handleSelect = (ranges) => {
     setStartDate(ranges.selection.startDate);
     setEndDate(ranges.selection.endDate);
@@ -28,6 +30,17 @@ const Header = () => {
     key: "selection",
   };
 
+  const handleSearch = () => {
+    router.push({
+      pathname: "/search",
+      query: {
+        location: searchInput,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        guestNumber,
+      },
+    });
+  };
   return (
     <header className="sticky top-0 z-50 grid grid-cols-3 bg-white px-5 py-5 shadow-md md:px-10">
       <div className="relative my-auto flex h-10 cursor-pointer items-center justify-between">
@@ -44,7 +57,7 @@ const Header = () => {
         <input
           className="flex-grow focus:outline-none"
           type="text"
-          placeholder="Start your search"
+          placeholder={placeholder ? placeholder : "Start you search"}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
@@ -92,7 +105,10 @@ const Header = () => {
             >
               Cancel
             </button>
-            <button className="flex-grow rounded-full px-4 py-2 text-red-400 transition-all hover:scale-105 hover:shadow-lg">
+            <button
+              onClick={handleSearch}
+              className="flex-grow rounded-full px-4 py-2 text-red-400 transition-all hover:scale-105 hover:shadow-lg"
+            >
               Search
             </button>
           </div>

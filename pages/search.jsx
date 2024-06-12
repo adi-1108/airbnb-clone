@@ -1,15 +1,35 @@
 import Header from "@/components/Header";
-
+import HotelCard from "@/components/HotelCard";
+import { format } from "date-fns";
+import { useRouter } from "next/router";
 const Search = () => {
+  const router = useRouter();
+
+  const { location, endDate, guestNumber, startDate } = router.query;
+  const formatedStartDate = format(new Date(startDate), "dd MMMM yy");
+  const formatedEndDate = format(new Date(endDate), "dd MMMM yy");
+  console.log(router.query);
   return (
     <div>
-      <Header />
+      <Header
+        placeholder={`${location} | ${formatedStartDate}-${formatedEndDate} | ${guestNumber} guests`}
+      />
 
       <main className="flex">
-        <section className="flex-grow mt-4 mb-6 px-6 py-4 ">
-            <p>300+ stays for 5 guests</p>
-            <h1 className="text-3xl">Stays in LOCATION</h1>
+        <section className="mb-6 mt-4 flex-grow px-6 py-4">
+          <div className="pb-10">
+            <p>300+ stays for {guestNumber} guests</p>
+            <h1 className="text-3xl">Stays in {location}</h1>
+            <p>
+              from {formatedStartDate} to {formatedEndDate}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-3">
+            <HotelCard />{" "}
+          </div>
         </section>
+        <section className="flex-grow">MAP</section>
       </main>
     </div>
   );
